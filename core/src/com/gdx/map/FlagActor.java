@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class FlagActor extends Actor {
     FlagWindow flagWindow;
     FlagActor _this = this;
+    GDXMap _map;
 
     private float x;
     private float y;
@@ -24,12 +25,14 @@ public class FlagActor extends Actor {
     public String extra;
 
     private boolean hoverable = false;
+    private boolean doneEditing = false;
 
     private Sprite flagSprite = new Sprite(new Texture(Gdx.files.internal("flag.png")));;
 
-    public FlagActor(float x, float y){
+    public FlagActor(float x, float y, GDXMap map){
         this.x = x;
         this.y = y;
+        this._map = map;
 
         setPosition(x, y);
         setSize(3, 3);
@@ -40,17 +43,23 @@ public class FlagActor extends Actor {
         flagWindow = new FlagWindow(this);
         flagWindow.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                remove_actor();
+            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                if(!hoverable)
+                    remove_actor();
             }
         });
 
         addListener(new ClickListener() {
             @Override
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor){
-                if(hoverable){
+                if(hoverable && !_map.hovered){
+                    _map.hovered = true;
                     System.out.println("Works");
                 }
+            }
+
+            public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor){
+                _map.hovered = false;
             }
         });
     }
@@ -70,12 +79,17 @@ public class FlagActor extends Actor {
     }
 
     public void validate(){
+        doneEditing = true;
         if(country.equals("") || code.equals("") || name.equals("")){
             remove_actor();
         }
         else{
             hoverable = true;
         }
+    }
+
+    public boolean isDoneEditing(){
+        return doneEditing;
     }
 
     public float getX(){

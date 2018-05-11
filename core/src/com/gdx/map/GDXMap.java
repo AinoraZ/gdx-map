@@ -40,7 +40,8 @@ public class GDXMap implements ApplicationListener {
     private List<FlagActor> actors = new ArrayList<FlagActor>();
 
     boolean hovered = false;
-    FlagActor chosen_actor;
+    boolean paused = false;
+    private FlagActor temp_flag;
 
 	@Override
 	public void create() {
@@ -65,16 +66,21 @@ public class GDXMap implements ApplicationListener {
 
 	@Override
 	public void render() {
-		handleInput();
-
-        if(need_fix) {
+        if (need_fix) {
             cam.zoom = WORLD_WIDTH / cam.viewportWidth;
             need_fix = false;
         }
 
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
+		if(!paused) {
+            handleInput();
+			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+			stage.act(Gdx.graphics.getDeltaTime());
+			stage.draw();
+        }
+        else{
+            System.out.println(temp_flag.isDoneEditing());
+            paused = !temp_flag.isDoneEditing();
+        }
 	}
 
 	private void handleInput() {
@@ -97,7 +103,6 @@ public class GDXMap implements ApplicationListener {
 			cam.translate(0, 2, 0);
 		}
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-		    //System.out.println(cam.zoom);
 		    int translate_x = Gdx.input.getDeltaX() * 2 * (-1);
 		    int translate_y = Gdx.input.getDeltaY() * 2;
 
@@ -107,16 +112,11 @@ public class GDXMap implements ApplicationListener {
             }
 
             cam.translate(translate_x, translate_y, 0);
-		    //System.out.println(Gdx.input.getDeltaX() + " " + Gdx.input.getDeltaY());
         }
 		if(Gdx.input.isButtonPressed(Input.Buttons.RIGHT)){
             if(Gdx.input.justTouched()){
-				mouse_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-				cam.unproject(mouse_position);
-				FlagActor temp_flag = new FlagActor(mouse_position.x, mouse_position.y);
-				stage.addActor(temp_flag);
-				actors.add(temp_flag);
-                pause();
+				add_flag();
+				paused = true;
             }
         }
 
@@ -133,30 +133,14 @@ public class GDXMap implements ApplicationListener {
 
 		cam.position.x = MathUtils.clamp(cam.position.x, effectiveViewportWidth / 2f, WORLD_WIDTH - effectiveViewportWidth / 2f);
 		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, WORLD_HEIGHT - effectiveViewportHeight / 2f);
-
-		handleFlags();
 	}
 
-	private void handleFlags(){
+	public void add_flag(){
         mouse_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         cam.unproject(mouse_position);
-
-        if(!hovered) {
-            for (FlagActor flag : actors) {
-                if (Math.abs(flag.getX() - mouse_position.x) < 2 && Math.abs(flag.getY() - mouse_position.y) < 2) {
-                    if(flag.isHoverable()) {
-                        hovered = true;
-                        chosen_actor = flag;
-                        System.out.println("Hovered");
-                    }
-                }
-            }
-        }
-        else{
-            if (Math.abs(chosen_actor.getX() - mouse_position.x) > 2 || Math.abs(chosen_actor.getY() - mouse_position.y) > 2) {
-                hovered = false;
-            }
-        }
+        temp_flag = new FlagActor(mouse_position.x, mouse_position.y, this);
+        stage.addActor(temp_flag);
+        actors.add(temp_flag);
     }
 
     public void camera_zoom(int amount){
@@ -179,6 +163,7 @@ public class GDXMap implements ApplicationListener {
 
 	@Override
 	public void resume() {
+
 	}
 
 	@Override
@@ -188,6 +173,7 @@ public class GDXMap implements ApplicationListener {
 
 	@Override
 	public void pause() {
+
 	}
 }
 
@@ -200,6 +186,8 @@ class MyInputProcessor extends InputAdapter {
 
     @Override
     public boolean scrolled(int amount){
+    	if(map.paused)
+    		return true;
         map.camera_zoom(amount * 2);
         return true;
     }
