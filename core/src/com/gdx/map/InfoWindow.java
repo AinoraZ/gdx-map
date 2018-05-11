@@ -14,9 +14,7 @@ public class InfoWindow extends JFrame {
     JTextField code = new JTextField();
     JTextField name = new JTextField();
 
-    /**
-     * Draws the Window and sets up the other Window instances.
-     */
+
     public InfoWindow(GDXMap map) {
         this.map = map;
         add_map_functions();
