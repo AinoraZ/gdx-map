@@ -29,8 +29,15 @@ public class InfoWindow extends JFrame {
         label = new JLabel("Search by Name");
         infoPane.add(label); infoPane.add(name);
 
-        label = new JLabel();
-        infoPane.add(label); infoPane.add(label);
+        JButton clear = new JButton("Clear Filter");
+        clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                name.setText("");
+                code.setText("");
+                country.setText("");
+            }
+        });
 
         JButton button = new JButton("Clear Flags");
         button.addActionListener(new ActionListener() {
@@ -40,10 +47,10 @@ public class InfoWindow extends JFrame {
             }
         });
 
+        clear.setBackground(new Color(52, 152, 219));
         button.setBackground(new Color(231, 76, 60));
 
-        infoPane.add(label);
-        infoPane.add(button);
+        infoPane.add(clear); infoPane.add(button);
         mainPane.add(infoPane);
     }
 

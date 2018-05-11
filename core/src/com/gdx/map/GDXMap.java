@@ -3,20 +3,11 @@ package com.gdx.map;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,15 +64,23 @@ public class GDXMap implements ApplicationListener {
 
 		if(!paused) {
             handleInput();
+            flag_filter();
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			stage.act(Gdx.graphics.getDeltaTime());
 			stage.draw();
         }
         else{
-            System.out.println(temp_flag.isDoneEditing());
             paused = !temp_flag.isDoneEditing();
         }
 	}
+
+	public void flag_filter(){
+	    for(FlagActor flag : actors){
+	        flag.search_country = infoWindow.country.getText();
+	        flag.search_code = infoWindow.code.getText();
+	        flag.search_name = infoWindow.name.getText();
+        }
+    }
 
 	private void handleInput() {
 		if (Gdx.input.isKeyPressed(Input.Keys.E)) {

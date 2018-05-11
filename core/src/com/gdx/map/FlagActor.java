@@ -1,14 +1,11 @@
 package com.gdx.map;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ai.btree.branch.Sequence;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
@@ -19,10 +16,14 @@ public class FlagActor extends Actor {
 
     private float x;
     private float y;
-    public String country;
-    public String code;
-    public String name;
-    public String extra;
+    public String country = "";
+    public String code = "";
+    public String name = "";
+    public String extra = "";
+
+    public String search_country = "";
+    public String search_code = "";
+    public String search_name = "";
 
     private boolean hoverable = false;
     private boolean doneEditing = false;
@@ -71,7 +72,12 @@ public class FlagActor extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha){
-        flagSprite.draw(batch);
+        if( name.toLowerCase().startsWith(search_name.toLowerCase()) &&
+            code.toLowerCase().startsWith(search_code.toLowerCase()) &&
+            country.toLowerCase().startsWith(search_country.toLowerCase())
+        ){
+            flagSprite.draw(batch);
+        }
     }
 
     public void remove_actor(){
