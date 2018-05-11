@@ -13,6 +13,7 @@ public class InfoWindow extends JFrame {
     JTextField country = new JTextField();
     JTextField code = new JTextField();
     JTextField name = new JTextField();
+    public Rectangle r;
 
 
     public InfoWindow(GDXMap map) {
@@ -60,10 +61,11 @@ public class InfoWindow extends JFrame {
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.pack();
 
-        Rectangle r = this.getBounds();
+        r = this.getBounds();
 
         this.setSize(600, r.height);
         this.setLocationRelativeTo(null);
+        this.setResizable(false);
 
         this.setTitle("Map Functions");
     }

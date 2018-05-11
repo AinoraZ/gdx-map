@@ -36,10 +36,10 @@ public class FlagActor extends Actor {
         this._map = map;
 
         setPosition(x, y);
-        setSize(3, 3);
+        setSize(18, 18);
 
         flagSprite.setPosition(x, y);
-        flagSprite.setSize(3, 3);
+        flagSprite.setSize(18, 18);
 
         flagWindow = new FlagWindow(this);
         flagWindow.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -55,12 +55,14 @@ public class FlagActor extends Actor {
             public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor){
                 if(hoverable && !_map.hovered){
                     _map.hovered = true;
+                    _map.hoverFlag = _this;
                     System.out.println("Works");
                 }
             }
 
             public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor){
                 _map.hovered = false;
+                System.out.println("Exit");
             }
         });
     }

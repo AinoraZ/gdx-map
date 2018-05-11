@@ -5,16 +5,26 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import org.lwjgl.Sys;
+import org.lwjgl.opengl.Display;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GDXMap implements ApplicationListener {
-	static final int WORLD_WIDTH = 246;
-	static final int WORLD_HEIGHT = 200;
+    static final int WORLD_WIDTH = 1230;
+    static final int WORLD_HEIGHT = 1000;
 	static final float ZOOM_DELTA = 0.015f;
 
 	private OrthographicCamera cam;
@@ -31,8 +41,12 @@ public class GDXMap implements ApplicationListener {
     private List<FlagActor> actors = new ArrayList<FlagActor>();
 
     boolean hovered = false;
+    boolean pop_up = false;
     boolean paused = false;
     private FlagActor temp_flag;
+
+    FlagActor hoverFlag;
+    HoverWindow hoverWindow;
 
 	@Override
 	public void create() {
@@ -40,11 +54,10 @@ public class GDXMap implements ApplicationListener {
 		float h = Gdx.graphics.getHeight();
 
 		cam = new OrthographicCamera(WORLD_WIDTH, WORLD_HEIGHT * (h / w));
-
 		batch = new SpriteBatch();
 		infoWindow = new InfoWindow(this);
 
-		viewport = new ExtendViewport(cam.viewportWidth / 2f, cam.viewportHeight / 2f, cam);
+		viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, cam);
 		stage = new Stage(viewport, batch);
 
 		stage.addActor(new MapActor());
@@ -63,6 +76,21 @@ public class GDXMap implements ApplicationListener {
         }
 
 		if(!paused) {
+            if(hovered){
+                if(!pop_up) {
+                    pop_up = true;
+                    hoverWindow = new HoverWindow(hoverFlag.country, hoverFlag.code, hoverFlag.name, hoverFlag.extra);
+
+                    System.out.println("Hello");
+                }
+            }
+            else{
+                if(pop_up) {
+                    pop_up = false;
+                    hovered = false;
+                    hoverWindow.dispose();
+                }
+            }
             handleInput();
             flag_filter();
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -102,12 +130,12 @@ public class GDXMap implements ApplicationListener {
 			cam.translate(0, 2, 0);
 		}
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-		    int translate_x = Gdx.input.getDeltaX() * 2 * (-1);
-		    int translate_y = Gdx.input.getDeltaY() * 2;
+		    int translate_x = Gdx.input.getDeltaX() * 6 * (-1);
+		    int translate_y = Gdx.input.getDeltaY() * 6;
 
 		    if(cam.zoom < 0.8f){
-		        translate_x = Gdx.input.getDeltaX() * (-1);
-		        translate_y = Gdx.input.getDeltaY();
+		        translate_x = Gdx.input.getDeltaX() * 3 * (-1);
+		        translate_y = Gdx.input.getDeltaY() * 3;
             }
 
             cam.translate(translate_x, translate_y, 0);
@@ -122,10 +150,14 @@ public class GDXMap implements ApplicationListener {
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)){
             if(Gdx.input.isKeyJustPressed(Input.Keys.F) && !infoWindow.isVisible()){
                 infoWindow.setVisible(true);
+                int x = MouseInfo.getPointerInfo().getLocation().x - 300;
+                int y = MouseInfo.getPointerInfo().getLocation().y - (infoWindow.r.height + 50);
+
+                infoWindow.setLocation(x, y);
             }
         }
 
-		cam.zoom = MathUtils.clamp(cam.zoom, 0.3f, WORLD_WIDTH/cam.viewportWidth);
+		cam.zoom = MathUtils.clamp(cam.zoom, 0.2f, WORLD_WIDTH/cam.viewportWidth);
 
 		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
 		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;

@@ -69,7 +69,12 @@ public class FlagWindow extends JFrame {
         Rectangle r = this.getBounds();
 
         this.setSize(500, r.height);
-        this.setLocationRelativeTo(null);
+
+        int x = MouseInfo.getPointerInfo().getLocation().x - 250;
+        int y = MouseInfo.getPointerInfo().getLocation().y - (r.height + 50);
+
+        setLocation(x, y);
+        this.setResizable(false);
 
         this.setVisible(true);
         this.setTitle("Flag Info");

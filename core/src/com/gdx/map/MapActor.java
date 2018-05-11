@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 public class MapActor extends Actor {
-    static final int WORLD_WIDTH = 246;
-    static final int WORLD_HEIGHT = 200;
+    static final int WORLD_WIDTH = 1230;
+    static final int WORLD_HEIGHT = 1000;
 
     private Sprite mapSprite = new Sprite(new Texture(Gdx.files.internal("map.png")));
 
