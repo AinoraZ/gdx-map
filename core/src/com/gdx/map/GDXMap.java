@@ -5,22 +5,18 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import org.lwjgl.Sys;
-import org.lwjgl.opengl.Display;
 
 import java.awt.*;
+import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class GDXMap implements ApplicationListener {
     static final int WORLD_WIDTH = 1230;
@@ -48,6 +44,8 @@ public class GDXMap implements ApplicationListener {
     FlagActor hoverFlag;
     HoverWindow hoverWindow;
 
+    Json json = new Json();
+
 	@Override
 	public void create() {
 		float w = Gdx.graphics.getWidth();
@@ -66,7 +64,26 @@ public class GDXMap implements ApplicationListener {
         inputMultiplexer.addProcessor(stage);
         inputMultiplexer.addProcessor(new MyInputProcessor(this));
         Gdx.input.setInputProcessor(inputMultiplexer);
-	}
+
+        try{
+            String content = new Scanner(new File("flags.json")).useDelimiter("\\Z").next();
+            List<Flag> flag_info = json.fromJson(new ArrayList<Flag>().getClass(), content);
+            for(Flag flag : flag_info){
+                FlagActor flag_temp = new FlagActor(flag.getX(), flag.getY(), this, true);
+                flag_temp.country = flag.getCountry();
+                flag_temp.code = flag.getCode();
+                flag_temp.name = flag.getName();
+                flag_temp.extra = flag.getExtra();
+
+                stage.addActor(flag_temp);
+                actors.add(flag_temp);
+            }
+        }
+        catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
 
 	@Override
 	public void render() {
@@ -80,8 +97,6 @@ public class GDXMap implements ApplicationListener {
                 if(!pop_up) {
                     pop_up = true;
                     hoverWindow = new HoverWindow(hoverFlag.country, hoverFlag.code, hoverFlag.name, hoverFlag.extra);
-
-                    System.out.println("Hello");
                 }
             }
             else{
@@ -150,7 +165,7 @@ public class GDXMap implements ApplicationListener {
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)){
             if(Gdx.input.isKeyJustPressed(Input.Keys.F) && !infoWindow.isVisible()){
                 infoWindow.setVisible(true);
-                int x = MouseInfo.getPointerInfo().getLocation().x - 300;
+                int x = MouseInfo.getPointerInfo().getLocation().x - (infoWindow.r.width/2);
                 int y = MouseInfo.getPointerInfo().getLocation().y - (infoWindow.r.height + 50);
 
                 infoWindow.setLocation(x, y);
@@ -169,7 +184,7 @@ public class GDXMap implements ApplicationListener {
 	public void add_flag(){
         mouse_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         cam.unproject(mouse_position);
-        temp_flag = new FlagActor(mouse_position.x, mouse_position.y, this);
+        temp_flag = new FlagActor(mouse_position.x, mouse_position.y, this, false);
         stage.addActor(temp_flag);
         actors.add(temp_flag);
     }
@@ -199,6 +214,21 @@ public class GDXMap implements ApplicationListener {
 
 	@Override
 	public void dispose() {
+	    json = new Json();
+	    List<Flag> flag_array = new ArrayList<Flag>();
+	    for(FlagActor flag : actors){
+	        Flag flag_info = new Flag(flag.getX(), flag.getY(), flag.country, flag.code, flag.name, flag.extra);
+	        flag_array.add(flag_info);
+        }
+	    try {
+            PrintWriter writer = new PrintWriter("flags.json");
+            json.setOutputType(JsonWriter.OutputType.json);
+            writer.print(json.prettyPrint(flag_array));
+            writer.close();
+        }
+        catch (Exception e){
+	        System.out.println(e.getMessage());
+        }
 		stage.dispose();
 	}
 
@@ -206,6 +236,77 @@ public class GDXMap implements ApplicationListener {
 	public void pause() {
 
 	}
+}
+
+class Flag{
+    private float x;
+    private float y;
+    private String country = "";
+    private String code = "";
+    private String name = "";
+    private String extra = "";
+
+    public Flag(){
+
+    }
+
+    public Flag(float x, float y, String country, String code, String name, String extra){
+        this.x = x;
+        this.y = y;
+        this.country = country;
+        this.code = code;
+        this.name = name;
+        this.extra = extra;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
+    public float getX() {
+
+        return x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getExtra() {
+        return extra;
+    }
 }
 
 class MyInputProcessor extends InputAdapter {

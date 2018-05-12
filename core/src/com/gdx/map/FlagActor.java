@@ -30,7 +30,7 @@ public class FlagActor extends Actor {
 
     private Sprite flagSprite = new Sprite(new Texture(Gdx.files.internal("flag.png")));;
 
-    public FlagActor(float x, float y, GDXMap map){
+    public FlagActor(float x, float y, GDXMap map, boolean load){
         this.x = x;
         this.y = y;
         this._map = map;
@@ -41,30 +41,33 @@ public class FlagActor extends Actor {
         flagSprite.setPosition(x, y);
         flagSprite.setSize(18, 18);
 
-        flagWindow = new FlagWindow(this);
-        flagWindow.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                if(!hoverable)
-                    remove_actor();
-            }
-        });
-
         addListener(new ClickListener() {
             @Override
-            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor){
-                if(hoverable && !_map.hovered){
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                if (hoverable && !_map.hovered) {
                     _map.hovered = true;
                     _map.hoverFlag = _this;
-                    System.out.println("Works");
                 }
             }
 
-            public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor){
+            public void exit(InputEvent event, float x, float y, int pointer, Actor fromActor) {
                 _map.hovered = false;
-                System.out.println("Exit");
             }
         });
+
+        if(load){
+            hoverable = true;
+        }
+        else {
+            flagWindow = new FlagWindow(this);
+            flagWindow.addWindowListener(new java.awt.event.WindowAdapter() {
+                @Override
+                public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                    if (!hoverable)
+                        remove_actor();
+                }
+            });
+        }
     }
 
     @Override

@@ -64,6 +64,9 @@ public class InfoWindow extends JFrame {
         r = this.getBounds();
 
         this.setSize(600, r.height);
+
+        r = this.getBounds();
+
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 

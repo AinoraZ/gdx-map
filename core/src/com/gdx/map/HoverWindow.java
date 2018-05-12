@@ -22,11 +22,11 @@ public class HoverWindow extends JFrame{
 
         mainPane.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
 
-        add_map_functions();
+        add_hover_info();
         showUI();
     }
 
-    private void add_map_functions(){
+    private void add_hover_info(){
         JLabel label = new JLabel("Country");
         infoPane.add(label); infoPane.add(country);
         label = new JLabel("Code");
@@ -47,9 +47,11 @@ public class HoverWindow extends JFrame{
 
         Rectangle r = this.getBounds();
 
-        this.setSize(500, r.height);;
+        this.setSize(500, r.height);
 
-        int x = MouseInfo.getPointerInfo().getLocation().x - 250;
+        r = this.getBounds();
+
+        int x = MouseInfo.getPointerInfo().getLocation().x - (r.width/2);
         int y = MouseInfo.getPointerInfo().getLocation().y - (r.height + 50);
 
         setLocation(x, y);

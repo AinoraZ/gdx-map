@@ -70,7 +70,9 @@ public class FlagWindow extends JFrame {
 
         this.setSize(500, r.height);
 
-        int x = MouseInfo.getPointerInfo().getLocation().x - 250;
+        r = this.getBounds();
+
+        int x = MouseInfo.getPointerInfo().getLocation().x - (r.width/2);
         int y = MouseInfo.getPointerInfo().getLocation().y - (r.height + 50);
 
         setLocation(x, y);
