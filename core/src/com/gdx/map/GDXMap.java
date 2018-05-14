@@ -18,6 +18,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+
+/**
+ * The main application of the program. Contains the scene and all of the logic for the actors to be displayed.
+ * <p>
+ * Handles user interaction with the application
+ * @author Ainoras Žukauskas
+ * @version 2018-05-14
+ */
 public class GDXMap implements ApplicationListener {
     static final int WORLD_WIDTH = 1230;
     static final int WORLD_HEIGHT = 1000;
@@ -117,6 +125,10 @@ public class GDXMap implements ApplicationListener {
         }
 	}
 
+    /**
+     * Gets the input provided by the FlagWindow instance and places that information in every FlagActor.
+     * The FlagActors render themselves accordingly.
+     */
 	public void flag_filter(){
 	    for(FlagActor flag : actors){
 	        flag.search_country = infoWindow.country.getText();
@@ -181,7 +193,7 @@ public class GDXMap implements ApplicationListener {
 		cam.position.y = MathUtils.clamp(cam.position.y, effectiveViewportHeight / 2f, WORLD_HEIGHT - effectiveViewportHeight / 2f);
 	}
 
-	public void add_flag(){
+	private void add_flag(){
         mouse_position.set(Gdx.input.getX(), Gdx.input.getY(), 0);
         cam.unproject(mouse_position);
         temp_flag = new FlagActor(mouse_position.x, mouse_position.y, this, false);
@@ -189,10 +201,28 @@ public class GDXMap implements ApplicationListener {
         actors.add(temp_flag);
     }
 
+    /**
+     * Removes the FlagActor reference from the actor list
+     * @param flag FlagActor instance to be removed from the actor list
+     * @see FlagActor
+     */
+    public synchronized void remove_flag(FlagActor flag){
+	    actors.remove(flag);
+    }
+
+    /**
+     * Zooms in the camera by amount specified multiplied by zoom multiplier
+     * @param amount
+     */
     public void camera_zoom(int amount){
         cam.zoom += ZOOM_DELTA * amount;
     }
 
+    /**
+     * Removes all the flags from the actor list and the stage
+     * <p>
+     * Called from InfoWindow
+     */
     public void clear_flags(){
         for(FlagActor actor : actors){
             actor.remove_actor();

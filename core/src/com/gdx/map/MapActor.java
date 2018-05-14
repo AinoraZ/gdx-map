@@ -6,12 +6,21 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+/**
+ * The Actor class which displays the actual map image on the GDXMap stage
+ * @author Ainoras Žukauskas
+ * @version 2018-05-14
+ * @see Actor
+ */
 public class MapActor extends Actor {
     static final int WORLD_WIDTH = 1230;
     static final int WORLD_HEIGHT = 1000;
 
     private Sprite mapSprite = new Sprite(new Texture(Gdx.files.internal("map.png")));
 
+    /**
+     * Sets up the position and size of the image that has to be drawn
+     */
     public MapActor(){
         mapSprite.setPosition(0, 0);
         mapSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);

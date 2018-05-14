@@ -4,6 +4,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.gdx.map.GDXMap;
 
+
+/**
+ * Runs the application in Desktop mode.
+ * @author Ainoras Žukauskas
+ * @version 2018-05-14
+ */
 public class DesktopLauncher {
 	public static void main(String[] args) {
 		LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();

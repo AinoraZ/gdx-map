@@ -3,17 +3,28 @@ package com.gdx.map;
 import javax.swing.*;
 import java.awt.*;
 
-public class HoverWindow extends JFrame{
-    GDXMap map;
-
-    JPanel mainPane = new JPanel(new BorderLayout());
+/**
+ * Information Window containing market information
+ * <p>
+ * Pops up when marker is hovered
+ *
+ * @author Ainoras Žukauskas
+ * @version 2018-05-14
+ */
+public class HoverWindow extends Window{
     JPanel infoPane = new JPanel(new GridLayout(0,2));
     JLabel country = new JLabel();
     JLabel code = new JLabel();
     JLabel name = new JLabel();
     JLabel extra = new JLabel();
 
-
+    /**
+     * Set's up the Window instance to be shown immediately
+     * @param country String value of the country the company belongs to.
+     * @param code String value of the code of the company
+     * @param name String value of the name of the company
+     * @param extra String value of any extra information
+     */
     public HoverWindow(String country, String code, String name, String extra) {
         this.country.setText(country);
         this.code.setText(code);
@@ -39,6 +50,9 @@ public class HoverWindow extends JFrame{
         mainPane.add(infoPane);
     }
 
+    /**
+     * Sets up Window instance size, title and other necessary things to show the Window
+     */
     public void showUI() {
         this.add(mainPane);
 

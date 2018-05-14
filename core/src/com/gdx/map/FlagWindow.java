@@ -6,12 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
- * The Main Window of the program. Responsible for accessing all other Windows.
+ * Creates new swing window for inputting information about the FlagActor on the map.
+ * @author Ainoras Žukauskas
+ * @version 2018-05-14
  */
-public class FlagWindow extends JFrame {
+public class FlagWindow extends Window {
     FlagWindow _this;
     FlagActor flag;
-    JPanel mainPane = new JPanel(new BorderLayout());
     JPanel infoPane = new JPanel(new GridLayout(0,2));
     JTextField country = new JTextField();
     JTextField code = new JTextField();
@@ -19,7 +20,9 @@ public class FlagWindow extends JFrame {
     JTextField extra = new JTextField();
 
     /**
-     * Draws the Window and sets up the other Window instances.
+     * Sets up the swing window for inputting information into the FlagActor instance.
+     * @param flag FlagActor instance which spawned this FlagWindow for information filling
+     * @see FlagActor
      */
     public FlagWindow(FlagActor flag) {
         this.flag = flag;
@@ -59,7 +62,9 @@ public class FlagWindow extends JFrame {
         mainPane.add(infoPane);
     }
 
-
+    /**
+     * Sets up Window instance size, title and other necessary things to show the Window
+     */
     public void showUI() {
         this.add(mainPane);
 

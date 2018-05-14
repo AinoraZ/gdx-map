@@ -5,10 +5,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class InfoWindow extends JFrame {
+/**
+ * Creates window which let's user search for specific FlagActors according to country, code and name.
+ * @author Ainoras Žukauskas
+ * @version 2018-05-14
+ */
+public class InfoWindow extends Window {
     GDXMap map;
 
-    JPanel mainPane = new JPanel(new BorderLayout());
     JPanel infoPane = new JPanel(new GridLayout(0,2));
     JTextField country = new JTextField();
     JTextField code = new JTextField();
@@ -16,6 +20,12 @@ public class InfoWindow extends JFrame {
     public Rectangle r;
 
 
+    /**
+     * Sets up the InfoWindow instance for searching the map of specific FlagActors
+     * @param map The main map window GDXMap reference.
+     * @see GDXMap
+     * @see FlagActor
+     */
     public InfoWindow(GDXMap map) {
         this.map = map;
         add_map_functions();
@@ -55,6 +65,9 @@ public class InfoWindow extends JFrame {
         mainPane.add(infoPane);
     }
 
+    /**
+     * Sets up Window instance size, title and other necessary things to show the Window
+     */
     public void showUI() {
         this.add(mainPane);
 
