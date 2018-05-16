@@ -16,6 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * @see Actor
  */
 public class FlagActor extends Actor {
+    private static final int DEFAULT_WIDTH = 18;
+    private static final int DEFAULT_HEIGHT = 18;
+
     private FlagWindow flagWindow;
     private FlagActor _this = this;
     private GDXMap _map;
@@ -50,10 +53,10 @@ public class FlagActor extends Actor {
         this._map = map;
 
         setPosition(x, y);
-        setSize(18, 18);
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         flagSprite.setPosition(x, y);
-        flagSprite.setSize(18, 18);
+        flagSprite.setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         addListener(new ClickListener() {
             @Override

@@ -11,13 +11,17 @@ import java.awt.event.ActionListener;
  * @version 2018-05-14
  */
 public class FlagWindow extends Window {
-    FlagWindow _this;
-    FlagActor flag;
-    JPanel infoPane = new JPanel(new GridLayout(0,2));
-    JTextField country = new JTextField();
-    JTextField code = new JTextField();
-    JTextField name = new JTextField();
-    JTextField extra = new JTextField();
+    private static final int DEFAULT_WIDTH = 500;
+    static final int HOVER_ADJUST_Y = 50;
+    private String title = "Flag Info";
+
+    private FlagWindow _this;
+    private FlagActor flag;
+    private JPanel infoPane = new JPanel(new GridLayout(0,2));
+    private JTextField country = new JTextField();
+    private JTextField code = new JTextField();
+    private JTextField name = new JTextField();
+    private JTextField extra = new JTextField();
 
     /**
      * Sets up the swing window for inputting information into the FlagActor instance.
@@ -55,7 +59,7 @@ public class FlagWindow extends Window {
             }
         });
 
-        button.setBackground(new Color(46, 204, 113));
+        button.setBackground(ColorLibrary.FLAT_GREEN);
 
         infoPane.add(new JLabel());
         infoPane.add(button);
@@ -73,17 +77,17 @@ public class FlagWindow extends Window {
 
         Rectangle r = this.getBounds();
 
-        this.setSize(500, r.height);
+        this.setSize(DEFAULT_WIDTH, r.height);
 
         r = this.getBounds();
 
         int x = MouseInfo.getPointerInfo().getLocation().x - (r.width/2);
-        int y = MouseInfo.getPointerInfo().getLocation().y - (r.height + 50);
+        int y = MouseInfo.getPointerInfo().getLocation().y - (r.height + HOVER_ADJUST_Y);
 
         setLocation(x, y);
         this.setResizable(false);
 
         this.setVisible(true);
-        this.setTitle("Flag Info");
+        this.setTitle(title);
     }
 }

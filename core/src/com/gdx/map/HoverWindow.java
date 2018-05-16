@@ -12,6 +12,11 @@ import java.awt.*;
  * @version 2018-05-14
  */
 public class HoverWindow extends Window{
+    private static final int DEFAULT_WIDTH = 500;
+    private static final int HOVER_ADJUST_Y = 50;
+    private static final int BORDER_SIZE = 10;
+    private String title = "Bookmark Info";
+
     JPanel infoPane = new JPanel(new GridLayout(0,2));
     JLabel country = new JLabel();
     JLabel code = new JLabel();
@@ -31,7 +36,7 @@ public class HoverWindow extends Window{
         this.name.setText(name);
         this.extra.setText(extra);
 
-        mainPane.setBorder(BorderFactory.createEmptyBorder(20,20,20,20));
+        mainPane.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
 
         add_hover_info();
         showUI();
@@ -61,17 +66,17 @@ public class HoverWindow extends Window{
 
         Rectangle r = this.getBounds();
 
-        this.setSize(500, r.height);
+        this.setSize(DEFAULT_WIDTH, r.height);
 
         r = this.getBounds();
 
         int x = MouseInfo.getPointerInfo().getLocation().x - (r.width/2);
-        int y = MouseInfo.getPointerInfo().getLocation().y - (r.height + 50);
+        int y = MouseInfo.getPointerInfo().getLocation().y - (r.height + HOVER_ADJUST_Y);
 
         setLocation(x, y);
 
         this.setResizable(false);
-        this.setTitle("Bookmark Info");
+        this.setTitle(title);
 
         this.setVisible(true);
     }

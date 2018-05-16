@@ -125,3 +125,6 @@ Thumbs.db
 /ios-moe/xcode/native/
 
 *.png
+*.jpg
+*.jpeg
+*.json

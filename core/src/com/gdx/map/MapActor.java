@@ -13,9 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  * @see Actor
  */
 public class MapActor extends Actor {
-    static final int WORLD_WIDTH = 1230;
-    static final int WORLD_HEIGHT = 1000;
-
     private Sprite mapSprite = new Sprite(new Texture(Gdx.files.internal("map.png")));
 
     /**
@@ -23,7 +20,7 @@ public class MapActor extends Actor {
      */
     public MapActor(){
         mapSprite.setPosition(0, 0);
-        mapSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
+        mapSprite.setSize(GDXMap.WORLD_WIDTH, GDXMap.WORLD_HEIGHT);
     }
 
     @Override

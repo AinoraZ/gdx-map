@@ -27,9 +27,42 @@ import java.util.Scanner;
  * @version 2018-05-14
  */
 public class GDXMap implements ApplicationListener {
+    /**
+     * Width of the MapActor map image.
+     * @see MapActor
+     */
     static final int WORLD_WIDTH = 1230;
+    /**
+     * Height of the MapActor map image.
+     * @see MapActor
+     */
     static final int WORLD_HEIGHT = 1000;
+    /**
+     * Delta change multiplier of the OrthographicCamera instance.
+     */
 	static final float ZOOM_DELTA = 0.015f;
+    /**
+     * The minimum allowed OrthographicCamera instance zoom number.
+     */
+	static final float MIN_ZOOM = 0.2f;
+    /**
+     * The OrthographicCamera instance zoom amount, where the OrthographicCamera drag changes speed.
+     */
+	static final float NEAR_FAR_BORDER = 0.8f;
+    /**
+     * The speed of the OrthographicCamera drag movement, when the camera is zoomed far.
+     */
+	static final int MOVE_SPEED_FAR = 6;
+    /**
+     * The speed of the OrthographicCamera drag movement, when the camera is zoomed near.
+     */
+	static final int MOVE_SPEED_NEAR = 3;
+
+    /**
+     * Adjusts the position of the HoverWindow instance
+     * @see HoverWindow
+     */
+    static final int HOVER_ADJUST_Y = 50;
 
 	private OrthographicCamera cam;
 	private SpriteBatch batch;
@@ -44,15 +77,15 @@ public class GDXMap implements ApplicationListener {
 
     private List<FlagActor> actors = new ArrayList<FlagActor>();
 
-    boolean hovered = false;
-    boolean pop_up = false;
-    boolean paused = false;
+    private boolean pop_up = false;
     private FlagActor temp_flag;
+    private Json json = new Json();
 
+    boolean hovered = false;
+    boolean paused = false;
     FlagActor hoverFlag;
     HoverWindow hoverWindow;
 
-    Json json = new Json();
 
 	@Override
 	public void create() {
@@ -145,24 +178,24 @@ public class GDXMap implements ApplicationListener {
 			cam.zoom -= ZOOM_DELTA;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			cam.translate(-2, 0, 0);
+			cam.translate(-MOVE_SPEED_NEAR, 0, 0);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			cam.translate(2, 0, 0);
+			cam.translate(MOVE_SPEED_NEAR, 0, 0);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			cam.translate(0, -2, 0);
+			cam.translate(0, -MOVE_SPEED_NEAR, 0);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			cam.translate(0, 2, 0);
+			cam.translate(0, MOVE_SPEED_NEAR, 0);
 		}
 		if(Gdx.input.isButtonPressed(Input.Buttons.LEFT)){
-		    int translate_x = Gdx.input.getDeltaX() * 6 * (-1);
-		    int translate_y = Gdx.input.getDeltaY() * 6;
+		    int translate_x = Gdx.input.getDeltaX() * MOVE_SPEED_FAR * (-1);
+		    int translate_y = Gdx.input.getDeltaY() * MOVE_SPEED_FAR;
 
-		    if(cam.zoom < 0.8f){
-		        translate_x = Gdx.input.getDeltaX() * 3 * (-1);
-		        translate_y = Gdx.input.getDeltaY() * 3;
+		    if(cam.zoom < NEAR_FAR_BORDER){
+		        translate_x = Gdx.input.getDeltaX() * MOVE_SPEED_NEAR * (-1);
+		        translate_y = Gdx.input.getDeltaY() * MOVE_SPEED_NEAR;
             }
 
             cam.translate(translate_x, translate_y, 0);
@@ -177,14 +210,14 @@ public class GDXMap implements ApplicationListener {
         if(Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Input.Keys.CONTROL_RIGHT)){
             if(Gdx.input.isKeyJustPressed(Input.Keys.F) && !infoWindow.isVisible()){
                 infoWindow.setVisible(true);
-                int x = MouseInfo.getPointerInfo().getLocation().x - (infoWindow.r.width/2);
-                int y = MouseInfo.getPointerInfo().getLocation().y - (infoWindow.r.height + 50);
+                int x = MouseInfo.getPointerInfo().getLocation().x - (infoWindow.getBounds().width/2);
+                int y = MouseInfo.getPointerInfo().getLocation().y - (infoWindow.getBounds().height + HOVER_ADJUST_Y);
 
                 infoWindow.setLocation(x, y);
             }
         }
 
-		cam.zoom = MathUtils.clamp(cam.zoom, 0.2f, WORLD_WIDTH/cam.viewportWidth);
+		cam.zoom = MathUtils.clamp(cam.zoom, MIN_ZOOM, WORLD_WIDTH/cam.viewportWidth);
 
 		float effectiveViewportWidth = cam.viewportWidth * cam.zoom;
 		float effectiveViewportHeight = cam.viewportHeight * cam.zoom;
@@ -340,6 +373,7 @@ class Flag{
 }
 
 class MyInputProcessor extends InputAdapter {
+    private static final int zoom_multiplier = 2;
     private GDXMap map;
 
     public MyInputProcessor(GDXMap map){
@@ -350,7 +384,7 @@ class MyInputProcessor extends InputAdapter {
     public boolean scrolled(int amount){
     	if(map.paused)
     		return true;
-        map.camera_zoom(amount * 2);
+        map.camera_zoom(amount * zoom_multiplier);
         return true;
     }
 }

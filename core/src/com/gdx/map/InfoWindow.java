@@ -11,14 +11,15 @@ import java.awt.event.ActionListener;
  * @version 2018-05-14
  */
 public class InfoWindow extends Window {
-    GDXMap map;
+    private static final int DEFAULT_WIDTH = 600;
+    private String title = "Map Functions";
 
-    JPanel infoPane = new JPanel(new GridLayout(0,2));
+    private GDXMap map;
+    private JPanel infoPane = new JPanel(new GridLayout(0,2));
+
     JTextField country = new JTextField();
     JTextField code = new JTextField();
     JTextField name = new JTextField();
-    public Rectangle r;
-
 
     /**
      * Sets up the InfoWindow instance for searching the map of specific FlagActors
@@ -58,8 +59,8 @@ public class InfoWindow extends Window {
             }
         });
 
-        clear.setBackground(new Color(52, 152, 219));
-        button.setBackground(new Color(231, 76, 60));
+        clear.setBackground(ColorLibrary.FLAT_BLUE);
+        button.setBackground(ColorLibrary.FLAT_RED);
 
         infoPane.add(clear); infoPane.add(button);
         mainPane.add(infoPane);
@@ -74,15 +75,13 @@ public class InfoWindow extends Window {
         this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.pack();
 
-        r = this.getBounds();
+        Rectangle r = this.getBounds();
 
-        this.setSize(600, r.height);
-
-        r = this.getBounds();
+        this.setSize(DEFAULT_WIDTH, r.height);
 
         this.setLocationRelativeTo(null);
         this.setResizable(false);
 
-        this.setTitle("Map Functions");
+        this.setTitle(title);
     }
 }
